@@ -1,0 +1,44 @@
+﻿@* Эта страница ожидает модель типа TaslViewModel *@
+@model StudyTracker.Models.TaskViewModel
+
+@{
+    Layout = null; // или "_Layout", если нужен общий макет
+    ViewData["Title"] = "Детали задачи";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .task { border: 1px solid #ccc; padding: 15px; max-width: 400px; }
+            .completed { color: green; }
+            .pending { color: red; }
+    </style>
+</head>
+<body>
+    <div class="task">
+        <h1>@Model.Name</h1>
+        <p><strong>ID:</strong> @Model.Id</p>
+        <p>
+            <strong>Статус:</strong>
+            @if (Model.IsCompleted)
+            {
+                <span class="completed">Выполнено</span>
+            }
+            else
+            {
+                <span class="pending">Не выполнено</span>
+            }
+        </p>
+
+        <form method="post" asp-action="Update">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit">Отметить выполненной</button>
+        </form>
+        <p><a asp-action="Index" asp-controller="Tasks">Назад к списку</a></p>
+    </div>
+</body>
+</html>
