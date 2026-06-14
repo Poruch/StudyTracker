@@ -1,8 +1,85 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model Notes.Client.Controllers.HomeViewModel
+
+@{
+    ViewData["Title"] = "Notes Client";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Notes Client - Результаты</h2>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (!Model.IsAuthenticated)
+                    {
+                        <div class="text-center py-5">
+                            <h3>Вы не авторизованы</h3>
+                            <p class="text-muted">Нажмите кнопку ниже для входа через AuthServer</p>
+                            <a href="@Url.Action("Login", "Auth")" class="btn btn-primary btn-lg">
+                                🔐 Войти через OAuth2
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-4">
+                            <h4>✅ Авторизация успешна</h4>
+                            <div class="alert alert-info">
+                                <strong>Access Token:</strong>
+                                <pre class="mb-0 mt-2" style="max-height: 100px; overflow-y: auto;">@Model.AccessToken</pre>
+                            </div>
+
+                            <div class="d-flex gap-2 mb-4">
+                                <form method="post" asp-action="CallApi" class="d-inline">
+                                    <button type="submit" class="btn btn-success">
+                                        📋 Получить заметки
+                                    </button>
+                                </form>
+                                <form method="post" asp-action="CreateNote" class="d-inline">
+                                    <button type="submit" class="btn btn-warning">
+                                        Создать заметку
+                                    </button>
+                                </form>
+                                <form method="post" asp-action="Logout" class="d-inline ms-auto">
+                                    <button type="submit" class="btn btn-danger">
+                                        🚪 Выйти
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.NotesJson))
+                        {
+                            <div class="mb-4">
+                                <h4>📝 Заметки из API:</h4>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <pre class="mb-0" style="max-height: 300px; overflow-y: auto;">@Model.NotesJson</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
